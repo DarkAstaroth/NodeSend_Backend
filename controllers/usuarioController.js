@@ -1,5 +1,8 @@
+const Usuario = require('../models/Usuario');
 
+exports.nuevoUsuario = async (req, res) => {
 
-exports.nuevoUsuario = async (req,res) => {
-    console.log('Desde nuevo usuario');
+    const usuario = await Usuario(req.body);
+    usuario.save();
+    res.json({ msg: 'usuario registrado correctamente' })
 }

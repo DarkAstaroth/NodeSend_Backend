@@ -10,7 +10,10 @@ conectarDB();
 console.log('Comenzando Node Send');
 
 // Puerto de la app
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8081;
+
+// Habilitar leer los valores de un body
+app.use(express.json());
 
 // rutas de la app
 app.use('/api/usuarios', require('./router/usuarios'));
