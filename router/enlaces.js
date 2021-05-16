@@ -5,6 +5,10 @@ const { check } = require('express-validator');
 const auth = require('../middleware/auth');
 
 router.post('/',
+    [
+        check('nombre', 'Sube un archivo').not().isEmpty(),
+        ckeck('nombre_original','Sube un archivo').not().isEmpty()
+    ],
     auth,
     enlacesController.nuevoEnlace
 );
