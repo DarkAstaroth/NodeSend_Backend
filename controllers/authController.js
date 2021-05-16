@@ -2,9 +2,15 @@ const Usuario = require('../models/Usuario');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: 'variables.env' });
+const { validationResult } = require('express-validator');
 
 exports.autenticarUsuario = async (req, res, next) => {
+    
     // Revisar si hay errores
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+        return res.status(400).json({ errores: errores.array() });
+    }
 
     // Buscar el usuario para ver si esta registrado
     const { email, password } = req.body;
