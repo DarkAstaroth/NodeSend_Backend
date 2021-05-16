@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const enlacesSchema = new Schema({
-    ulr: {
+    url: {
         type: String,
         required : true
     },
@@ -15,7 +15,8 @@ const enlacesSchema = new Schema({
         required: true
     },
     descargas: {
-        type:Number
+        type: Number,
+        default : 1
     },
     autor: {
         type: mongoose.Schema.Types.ObjectId,
