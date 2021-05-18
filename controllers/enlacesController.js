@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
 exports.nuevoEnlace = async (req, res, next) => {
-    
+
     // Revisar si hay errores
     const errores = validationResult(req);
     if (!errores.isEmpty()) {
@@ -32,12 +32,12 @@ exports.nuevoEnlace = async (req, res, next) => {
         }
 
         // Asignar el autor
-        enlace.autor=req.usuario.id
+        enlace.autor = req.usuario.id
     }
-    
+
     // Almacenar en la BD
     try {
-        
+
         await enlace.save();
         return res.json({ msg: `${enlace.url}` });
         next();
@@ -45,4 +45,25 @@ exports.nuevoEnlace = async (req, res, next) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+// Obtener el enlace
+exports.obtenerEnlace = async (req, res, next) => {
+
+    console.log(req.params.url);
+    const { url } = req.params;
+
+    // verificar si existe el enlace
+    const enlace = await Enlaces.findOne({ url });
+    if (!enlace) {
+        res.status(404).json({ msg: 'Ese enlace no existe' });
+        return next();
+    }
+
+    // si el enlace existe
+    res.json({ archivo: enlace.nombre });
+
+    // Si las descargas son igual a 1- Borrar la entrada y borrar el archivo
+
+    // Si las descargas son > a 1 - Restar 1
 }
