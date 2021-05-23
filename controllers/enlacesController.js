@@ -57,6 +57,26 @@ exports.todosEnlaces = async (req, res) => {
     }
 }
 
+// retorna si el enlace tiene password o no
+exports.tienePassword = async (req, res, next) => {
+    
+    console.log(req.params.url);
+    const { url } = req.params;
+
+    // verificar si existe el enlace
+    const enlace = await Enlaces.findOne({ url });
+    if (!enlace) {
+        res.status(404).json({ msg: 'Ese enlace no existe' });
+        return next();
+    }
+
+    if (enlace.password) {
+        return res.json({ password: true, enlace: enlace.url });
+    }
+    next();
+}
+
+
 // Obtener el enlace
 exports.obtenerEnlace = async (req, res, next) => {
 
