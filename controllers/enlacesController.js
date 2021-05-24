@@ -11,7 +11,7 @@ exports.nuevoEnlace = async (req, res, next) => {
         return res.status(400).json({ errores: errores.array() });
     }
 
-    const { nombre_original, password ,nombre} = req.body;
+    const { nombre_original, password, nombre } = req.body;
     const enlace = new Enlaces();
     enlace.url = shortid.generate();
     enlace.nombre = nombre;
@@ -51,7 +51,7 @@ exports.nuevoEnlace = async (req, res, next) => {
 exports.todosEnlaces = async (req, res) => {
     try {
         const enlaces = await Enlaces.find({}).select('url -_id');
-        res.json({enlaces});
+        res.json({ enlaces });
     } catch (error) {
         console.log(error);
     }
@@ -59,8 +59,8 @@ exports.todosEnlaces = async (req, res) => {
 
 // retorna si el enlace tiene password o no
 exports.tienePassword = async (req, res, next) => {
+
     
-    console.log(req.params.url);
     const { url } = req.params;
 
     // verificar si existe el enlace
@@ -71,16 +71,35 @@ exports.tienePassword = async (req, res, next) => {
     }
 
     if (enlace.password) {
-        return res.json({ password: true, enlace: enlace.url });
+        return res.json({ password: true, enlace: enlace.url , archivo:enlace.nombre });
     }
     next();
 }
+
+// verifica si el enlace es correcto
+exports.verificarPassword = async (req, res, next) => {
+    const { url } = req.params;
+    const { password } = req.body;
+
+    // consultar por el enlace 
+    const enlace = await Enlaces.findOne({ url });
+
+    // verificar el password
+    if (bcrypt.compareSync(password, enlace.password)) {
+        // permitirle al usuario descargar el archivo 
+        next();
+    } else {
+        return res.status(401).json({ msg: 'Password incorrecto' })
+    }
+
+    
+}
+
 
 
 // Obtener el enlace
 exports.obtenerEnlace = async (req, res, next) => {
 
-    console.log(req.params.url);
     const { url } = req.params;
 
     // verificar si existe el enlace
@@ -91,7 +110,7 @@ exports.obtenerEnlace = async (req, res, next) => {
     }
 
     // si el enlace existe
-    res.json({ archivo: enlace.nombre });
+    res.json({ archivo: enlace.nombre, password: false });
 
     next();
 
